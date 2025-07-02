@@ -4,8 +4,9 @@ from langchain.agents import AgentExecutor, create_tool_calling_agent
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.memory import ConversationBufferMemory
 from dotenv import load_dotenv
-from agent_tools import check_availability, book_slot_event
-from langchain_core.tools import Tool
+from langchain_core.tools import Tool, StructuredTool
+from agent_tools import check_availability, book_slot_event, BookSlotInput
+
 
 load_dotenv()
 
@@ -20,13 +21,14 @@ tools = [
     Tool.from_function(
         func=check_availability,
         name="check_availability",
-        description="Checks if a time slot is available in the calendar",
+        description="Checks if a time slot is available.",
         return_direct=True
     ),
-    Tool.from_function(
+    StructuredTool.from_function(
         func=book_slot_event,
         name="book_slot_event",
-        description="Books an event on the calendar",
+        description="Books a calendar event using summary and start time.",
+        args_schema=BookSlotInput,
         return_direct=True
     )
 ]
