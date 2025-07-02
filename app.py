@@ -3,9 +3,7 @@ from agent import run_agent
 
 # setting up streamlit functionalities
 
-# You can re-enable this later once the core functionality works,
-# and ensure the path to your image is absolutely correct or relative to the app.py file.
-# st.set_page_config(page_title="Event Booking Bot", page_icon='/utilities/chat-bot.jpg')
+
 
 st.title("TailorTalk Event Booking AI")
 st.subheader("AI Bot to assists event Bookings in your Calendar!")
@@ -22,12 +20,10 @@ user_input = st.chat_input("Ask me to check schedule or book an event in your ca
 if user_input:
     st.chat_message("user").markdown(user_input)
 
-    # --- CRITICAL CHANGE HERE ---
-    # The agent_executor.invoke() returns a dictionary.
-    # You need to extract the 'output' key for the actual response.
+
     raw_agent_response = run_agent(user_input)
 
-    # This print helps confirm what `run_agent` is returning.
+
     print(f"DEBUG: Type of raw_agent_response: {type(raw_agent_response)}")
     print(f"DEBUG: Content of raw_agent_response: {raw_agent_response}")
 
@@ -35,7 +31,7 @@ if user_input:
     if isinstance(raw_agent_response, dict) and "output" in raw_agent_response:
         display_response = raw_agent_response["output"]
     else:
-        # Fallback if the structure is unexpected (e.g., if run_agent directly returns a string)
+
         display_response = str(raw_agent_response)
 
     # save context in session

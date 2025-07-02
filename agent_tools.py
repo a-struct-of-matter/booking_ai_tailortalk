@@ -3,14 +3,14 @@ from langchain.tools import tool
 from calendar_uitls import check_slot, book_event
 from dateutil.parser import parse
 
-
+#checking availability of slot in calendar
 @tool
 def check_availability(datetime_string: str) -> str:
-    """Checks if the given time slot is available."""  # <--- ADDED DOCSTRING
+    """Checks if the given time slot is available."""
     print(f"Checking availability for: '{datetime_string}'")
     try:
         start_dt = parse(datetime_string, fuzzy=True, dayfirst=False, yearfirst=False)
-
+        #parsing datetime...
         local_timezone = datetime.now(timezone.utc).astimezone().tzinfo
 
         start_dt_aware = start_dt.replace(tzinfo=local_timezone) if start_dt.tzinfo is None else start_dt
@@ -40,6 +40,7 @@ def check_availability(datetime_string: str) -> str:
         return error_message
 
 
+#booking slot
 @tool
 def book_slot_event(summary: str, start_time: str, end_time: str = None) -> str:
     """Books an event on the calendar with a title and time range."""  # <--- ADDED DOCSTRING

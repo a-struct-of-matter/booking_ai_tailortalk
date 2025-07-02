@@ -32,34 +32,33 @@ prompt = ChatPromptTemplate.from_messages([
 ])
 
 # Create the agent
-# This agent is specifically designed for models with function calling capabilities
+
 agent = create_tool_calling_agent(llm, tools, prompt)
 
 # Create the AgentExecutor
-# This is the runnable chain that executes the agent's steps
+
 agent_executor = AgentExecutor(
     agent=agent,
     tools=tools,
-    verbose=True,  # Keep verbose for debugging
-    memory=memory,  # Pass the memory here
-    handle_parsing_errors=True  # Good practice to handle unexpected model outputs
+    verbose=True,
+    memory=memory,
+    handle_parsing_errors=True
 )
 
 
 def run_agent(user_query: str) -> str:
     try:
-        # Use invoke() which returns a dictionary, and extract the 'output'
+
         response = agent_executor.invoke({"input": user_query})
 
-        # Check if the response is a dictionary and has an 'output' key
+
         if isinstance(response, dict) and "output" in response:
             return response["output"]
         else:
-            # Fallback if the structure is unexpected (though it should be a dict with 'output')
+
             return str(response)  # Return the whole response as a string if 'output' not found
 
     except Exception as e:
-        # LangChain AgentExecutor can sometimes raise errors
-        # if the model output is malformed or parsing fails
+
         print(f"Error running agent: {e}")
         return f"Sorry, I encountered an error: {str(e)}"

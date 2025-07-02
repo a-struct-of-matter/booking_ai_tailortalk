@@ -5,6 +5,7 @@ import os
 
 from google.auth.transport.requests import Request
 
+#Globals
 SERVICE_ACCOUNT_FILE = os.getenv(
     "GOOGLE_SERVICE_ACCOUNT_FILE",
     "C:/Users/revan/PycharmProjects/Booking_agent/utilities/booking-464615-53561ef0a4d9.json"
@@ -15,7 +16,7 @@ CAL_ID = os.getenv(
     'e699a00a92f6b1a2bc12455c667f28b71feb0b1b6a8ccfe556bd2810ac430f63@group.calendar.google.com'
 )
 
-
+#retrive calendar services from google cloud service using credentials.json file
 def get_calendar_service():
     try:
         credentials = service_account.Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
@@ -37,7 +38,7 @@ def get_calendar_service():
         print(error_msg)
         raise ConnectionError(error_msg)
 
-
+#checking slot using time and date
 def check_slot(start_time_iso: str, end_time_iso: str) -> bool:
     service = None
     try:
@@ -61,7 +62,7 @@ def check_slot(start_time_iso: str, end_time_iso: str) -> bool:
         print(f"ERROR: Failed to check slot for {start_time_iso} to {end_time_iso}: {e}")
         return False
 
-
+#Book event using time and date using LLM output
 def book_event(summary: str, start_time_iso: str, end_time_iso: str, desc="Booking done through agent") -> dict:
     service = None
     try:
