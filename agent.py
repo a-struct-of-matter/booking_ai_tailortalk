@@ -5,7 +5,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain.memory import ConversationBufferMemory
 from dotenv import load_dotenv
 from langchain_core.tools import Tool, StructuredTool
-from agent_tools import check_availability, book_slot_event, BookSlotInput
+from agent_tools import check_availability, book_slot_event, BookSlotInput,tell_today_date, get_today_free_slots
 
 
 load_dotenv()
@@ -17,7 +17,7 @@ llm = ChatGoogleGenerativeAI(model="models/gemini-1.5-flash", google_api_key=GEM
 
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
-from agent_tools import check_availability, book_slot_event, BookSlotInput, get_today_free_slots
+
 
 tools = [
     Tool.from_function(
@@ -36,14 +36,22 @@ tools = [
     Tool.from_function(
         func=get_today_free_slots,
         name="get_today_free_slots",
-        description="Get all available 30-minute free slots for the given day like 'today' or 'July 3'.",
+        description="Returns a list of available time slots for the given day. Input should be a natural language date like 'today', 'tomorrow', or 'July 3'.",
+        return_direct=True
+    ),
+
+    StructuredTool.from_function(
+        func=tell_today_date,
+        name="tell_today_date",
+        description="Returns today's date if the user asks 'what is today's date', 'what day is today', etc.",
         return_direct=True
     )
+
 ]
 
 
 prompt = ChatPromptTemplate.from_messages([
-    ("system", "You are a helpful AI assistant that helps users book and check calendar events."),
+    ("system", "You are a helpful AI assistant that can help users book calendar appointments, check availability, return today's date, and suggest free time slots using tools."),
     ("placeholder", "{chat_history}"),
     ("human", "{input}"),
     ("placeholder", "{agent_scratchpad}")

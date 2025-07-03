@@ -17,6 +17,12 @@ def get_today_free_slots(date_string: str) -> str:
         return "\n".join(slots)
     return "No free slots available today."
 
+#return today date
+def tell_today_date() -> str:
+    """Returns today's date in a natural format."""
+    today = datetime.now().strftime("%A, %B %d, %Y")
+    print(today)
+    return f"Today is {today}."
 
 # checking availability of slot in calendar
 def check_availability(datetime_string: str) -> str:
