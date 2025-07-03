@@ -17,21 +17,30 @@ llm = ChatGoogleGenerativeAI(model="models/gemini-1.5-flash", google_api_key=GEM
 
 memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True)
 
+from agent_tools import check_availability, book_slot_event, BookSlotInput, get_today_free_slots
+
 tools = [
     Tool.from_function(
         func=check_availability,
         name="check_availability",
-        description="Checks if a time slot is available.",
+        description="Check if a specific time slot like 'July 3 at 3pm' is available.",
         return_direct=True
     ),
     StructuredTool.from_function(
         func=book_slot_event,
         name="book_slot_event",
-        description="Books a calendar event using summary and start time.",
+        description="Book a calendar event given a title and time.",
         args_schema=BookSlotInput,
+        return_direct=True
+    ),
+    Tool.from_function(
+        func=get_today_free_slots,
+        name="get_today_free_slots",
+        description="Get all available 30-minute free slots for the given day like 'today' or 'July 3'.",
         return_direct=True
     )
 ]
+
 
 prompt = ChatPromptTemplate.from_messages([
     ("system", "You are a helpful AI assistant that helps users book and check calendar events."),
