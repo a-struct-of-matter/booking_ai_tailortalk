@@ -16,13 +16,17 @@ CAL_ID = os.getenv(
 #to check available slots
 
 def get_free_slots_for_day(date_string: str) -> list[str]:
-    """
-    Returns available 30-minute slots for a given day (e.g., '2024-07-03').
-    """
     try:
         service = get_calendar_service()
-        date_obj = parse(date_string).date()
         local_tz = datetime.now(timezone.utc).astimezone().tzinfo
+
+
+        if date_string.lower().strip() == "today":
+            date_obj = datetime.now(local_tz).date()
+        elif date_string.lower().strip() == "tomorrow":
+            date_obj = (datetime.now(local_tz) + timedelta(days=1)).date()
+        else:
+            date_obj = parse(date_string).date()
 
         start_of_day = datetime.combine(date_obj, datetime.min.time(), tzinfo=local_tz).replace(hour=9)
         end_of_day = datetime.combine(date_obj, datetime.min.time(), tzinfo=local_tz).replace(hour=17)
@@ -52,6 +56,7 @@ def get_free_slots_for_day(date_string: str) -> list[str]:
         return free_slots
     except Exception as e:
         return [f"Error: {str(e)}"]
+
 
 # retrieve calendar services from google cloud service using credentials via environment
 def get_calendar_service():
